@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ETC Label Maker</title>
+<style>
+/* ---------- embedded fonts (base64 injected at build time) ---------- */
+@font-face{
+  font-family:'LabelFont';
+  src:url('__FONT_OSWALD__') format('woff2');
+  font-weight:400 700;font-style:normal;font-display:block;
+}
+
+/* ---------- theme ---------- */
+:root{
+  --sativa:#FF00FF;
+  --hybrid:#00C62D;
+  --indica:#6600FF;
+  --bg:#12141a;
+  --panel:#1b1e27;
+  --panel2:#232735;
+  --line:#333949;
+  --ink:#eef1f7;
+  --muted:#9aa3b5;
+  --accent:#33d17a;
+  --accent2:#7b61ff;
+}
+
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{
+  background:var(--bg);color:var(--ink);
+  font-family:'Segoe UI',system-ui,Arial,sans-serif;
+  display:flex;flex-direction:column;min-height:100%;
+}
+
+/* ---------- top bar ---------- */
+#topbar{
+  display:flex;align-items:center;gap:18px;flex-wrap:wrap;
+  padding:14px 20px;background:var(--panel);border-bottom:1px solid var(--line);
+}
+#topbar h1{font-size:18px;margin:0;letter-spacing:.3px;font-weight:700}
+#topbar h1 .leaf{color:var(--accent)}
+#verbadge{font-size:13px;font-weight:800;color:#06210f;background:var(--accent);
+  padding:3px 10px;border-radius:20px;letter-spacing:.3px;white-space:nowrap}
+.sizewrap{display:flex;align-items:center;gap:8px}
+.sizewrap label{font-size:13px;color:var(--muted)}
+select#labelSize{
+  font-size:15px;padding:7px 12px;border-radius:8px;
+  background:var(--panel2);color:var(--ink);border:1px solid var(--line);cursor:pointer;
+}
+.spacer{flex:1}
+.btn{
+  font-size:14px;font-weight:600;padding:9px 16px;border-radius:9px;cursor:pointer;
+  border:1px solid var(--line);background:var(--panel2);color:var(--ink);
+}
+.btn:hover{border-color:#4a5168}
+.btn.primary{background:var(--accent);color:#06210f;border-color:transparent}
+.btn.primary:hover{filter:brightness(1.07)}
+.btn.ghost{background:transparent}
+
+/* ---------- main split ---------- */
+#main{display:flex;flex:1;min-height:0}
+#left{
+  width:46%;min-width:420px;max-width:640px;
+  padding:18px 20px;overflow:auto;border-right:1px solid var(--line);
+}
+#right{flex:1;min-width:0;overflow:auto;background:#0c0e13;padding:22px;display:flex;flex-direction:column;align-items:center}
+
+.hint{font-size:12.5px;color:var(--muted);margin:0 0 14px}
+
+/* ---------- grid table ---------- */
+table.grid{width:100%;border-collapse:separate;border-spacing:0}
+table.grid th{
+  text-align:left;font-size:11.5px;letter-spacing:.6px;text-transform:uppercase;
+  color:var(--muted);padding:0 8px 8px;font-weight:700;
+}
+table.grid td{padding:0 6px 8px}
+table.grid td:first-child,table.grid th:first-child{padding-left:0}
+.cellinput,select.typesel{
+  width:100%;font-size:15px;padding:10px 11px;border-radius:8px;
+  background:var(--panel);border:1px solid var(--line);color:var(--ink);
+}
+.cellinput:focus,select.typesel:focus{outline:none;border-color:var(--accent2)}
+.col-type{width:34%}
+.col-name{width:auto}
+.col-thc{width:20%}
+.col-x{width:30px}
+select.typesel{cursor:pointer;font-weight:700}
+select.typesel[data-t="Sativa"]{color:var(--sativa)}
+select.typesel[data-t="Hybrid"]{color:var(--hybrid)}
+select.typesel[data-t="Indica"]{color:var(--indica)}
+.thcwrap{position:relative}
+.thcwrap::after{content:'%';position:absolute;right:11px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:14px;pointer-events:none}
+.thcwrap .cellinput{padding-right:26px}
+.xbtn{
+  width:28px;height:28px;border-radius:7px;border:1px solid var(--line);
+  background:transparent;color:var(--muted);cursor:pointer;font-size:15px;line-height:1;
+}
+.xbtn:hover{color:#ff6b6b;border-color:#5a2b2b}
+.gridfoot{display:flex;align-items:center;gap:14px;margin-top:6px}
+#addRow{font-size:13px}
+#count{font-size:12.5px;color:var(--muted);margin-left:auto}
+
+/* ---------- preview ---------- */
+#previewTitle{align-self:flex-start;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin:0 0 12px}
+#previewScaler{transform-origin:top center}
+.sheetStack{display:flex;flex-direction:column;gap:26px}
+
+/* ---------- printable sheet (real Letter size) ---------- */
+.page{
+  width:8.5in;height:11in;background:#fff;position:relative;overflow:hidden;
+  box-shadow:0 6px 30px rgba(0,0,0,.5);
+}
+.label{position:absolute;
+  -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.label .lframe{position:absolute;left:0;top:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.label .lline{position:absolute;left:50%;transform:translate(-50%,-50%);z-index:1;
+  font-family:'LabelFont';font-weight:500;line-height:1;white-space:nowrap;text-align:center}
+.label .ltype{text-transform:uppercase}
+
+/* cut guides */
+.cutmark{position:absolute;background:#111}
+
+/* ---------- print ---------- */
+@page{size:letter;margin:0}
+@media print{
+  #topbar,#left,#previewTitle{display:none!important}
+  body{background:#fff}
+  #main{display:block}
+  #right{padding:0;background:#fff;display:block;overflow:visible}
+  #previewScaler{transform:none!important}
+  .sheetStack{gap:0}
+  .page{box-shadow:none;page-break-after:always;break-after:page}
+  .page:last-child{page-break-after:auto}
+}
+
+/* ---------- status corner ---------- */
+#status{
+  position:fixed;right:10px;bottom:8px;font-size:11.5px;color:var(--muted);
+  background:rgba(20,22,30,.85);padding:4px 10px;border-radius:20px;border:1px solid var(--line);
+  pointer-events:none;
+}
+@media print{#status{display:none}}
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <h1><span class="leaf">✦</span> ETC Label Maker</h1>
+  <span id="verbadge">v__VERSION__</span>
+  <div class="sizewrap">
+    <label for="labelSize">Label size</label>
+    <select id="labelSize">
+      <option value="large">Large (3 per page)</option>
+      <option value="small">Small (27 per page)</option>
+    </select>
+  </div>
+  <div class="spacer"></div>
+  <button class="btn ghost" id="clearBtn">Clear</button>
+  <button class="btn primary" id="printBtn">🖨 Print labels</button>
+</div>
+
+<div id="main">
+  <div id="left">
+    <p class="hint">Each row is one label. Pick the strain type, then type the strain name and THC%. Press Enter or ↓ to add another row, or × to remove one. The preview on the right shows exactly what prints — only these rows.</p>
+    <table class="grid">
+      <thead>
+        <tr>
+          <th class="col-type">Strain type</th>
+          <th class="col-name">Strain name</th>
+          <th class="col-thc">THC %</th>
+          <th class="col-x"></th>
+        </tr>
+      </thead>
+      <tbody id="rows"></tbody>
+    </table>
+    <div class="gridfoot">
+      <button class="btn ghost" id="addRow">+ Add row</button>
+      <span id="count"></span>
+    </div>
+  </div>
+
+  <div id="right">
+    <p id="previewTitle">Print preview</p>
+    <div id="previewScaler"><div class="sheetStack" id="printroot"></div></div>
+  </div>
+</div>
+
+<div id="status">v__VERSION__ · checking for updates…</div>
+
+<script>
+"use strict";
+const APP_VERSION="__VERSION__";
+const UPDATE_BASE="https://raw.githubusercontent.com/madisonhypes/etc-label-maker/main";
+
+const COLORS={Sativa:"#FF00FF",Hybrid:"#00C62D",Indica:"#6600FF"};
+
+/* ---- geometry per size (inches; positions are label CENTERS on the 8.5x11 page) ---- */
+const LAYOUT={
+  large:{
+    cols:1,
+    cellW:4.600, cellH:3.207,
+    colCenters:[4.25],
+    rowCenters:[2.303, 5.483, 8.663],
+    // vertical position of each line as a fraction of the cell height
+    typeY:0.260, nameY:0.485, thcY:0.720,
+    typePt:63, namePt:71, thcPt:57, strokePx:7.75, typeLetterSpacing:0.01,
+    nameMaxIn:4.35, typeMaxIn:3.30,
+    thcFmt:v=>"THC:"+v+"%"
+  },
+  small:{
+    cols:3,
+    cellW:2.213, cellH:1.147,
+    colCenters:[2.07, 4.25, 6.43],
+    firstRowY:1.017, rowPitch:1.095, numRows:9,
+    typeY:0.165, nameY:0.440, thcY:0.740,
+    typePt:28, namePt:31, thcPt:36, strokePx:4.1, typeLetterSpacing:0.01,
+    nameMaxIn:1.90, typeMaxIn:1.25,
+    thcFmt:v=>v+"%"
+  }
+};
+// derived: rows list + per-page capacity
+LAYOUT.large.rows = LAYOUT.large.rowCenters.length;
+LAYOUT.small.rows = LAYOUT.small.numRows;
+LAYOUT.large.perPage = LAYOUT.large.cols * LAYOUT.large.rows;
+LAYOUT.small.perPage = LAYOUT.small.cols * LAYOUT.small.rows;
+function rowCenterY(L,row){ return L.rowCenters ? L.rowCenters[row] : (L.firstRowY + row*L.rowPitch); }
+
+let data=[]; // {type,name,thc}
+const rowsEl=document.getElementById('rows');
+const sizeEl=document.getElementById('labelSize');
+const printroot=document.getElementById('printroot');
+
+function blankRow(){return {type:"Sativa",name:"",thc:""};}
+function defaultRows(){return [{type:"Sativa",name:"",thc:""},{type:"Hybrid",name:"",thc:""},{type:"Indica",name:"",thc:""}];}
+
+/* ---------- spreadsheet-style keyboard navigation ---------- */
+function cellsOf(tr){return [tr.querySelector('select.typesel'),
+  tr.querySelector('td.col-name input'), tr.querySelector('td.col-thc input')];}
+function focusCell(r,c,caret){
+  if(r<0||c<0||c>2) return;
+  if(r>=data.length){ data.push(blankRow()); renderRows(); build(); }
+  const tr=rowsEl.children[r]; if(!tr) return;
+  const el=cellsOf(tr)[c]; if(!el) return;
+  el.focus();
+  if(el.tagName==='INPUT'){ const L=el.value.length; const p=(caret==='start')?0:L; try{el.setSelectionRange(p,p);}catch(e){} }
+}
+function onCellKey(e,r,c){
+  const el=e.target, isInput=el.tagName==='INPUT';
+  const atEnd = !isInput || (el.selectionStart===el.value.length && el.selectionStart===el.selectionEnd);
+  const atStart = !isInput || (el.selectionStart===0 && el.selectionEnd===0);
+  if(e.key==='ArrowDown'||e.key==='Enter'){ e.preventDefault(); focusCell(r+1,c); }
+  else if(e.key==='ArrowUp'){ e.preventDefault(); focusCell(r-1,c); }
+  else if(e.key==='ArrowRight' && atEnd){ e.preventDefault(); if(c<2) focusCell(r,c+1,'start'); else focusCell(r+1,0,'start'); }
+  else if(e.key==='ArrowLeft' && atStart){ e.preventDefault(); if(c>0) focusCell(r,c-1,'end'); else if(r>0) focusCell(r-1,2,'end'); }
+}
+
+function renderRows(){
+  rowsEl.innerHTML="";
+  data.forEach((r,i)=>{
+    const tr=document.createElement('tr');
+
+    const tdT=document.createElement('td');tdT.className='col-type';
+    const sel=document.createElement('select');sel.className='typesel';sel.dataset.t=r.type;
+    ["Sativa","Hybrid","Indica"].forEach(t=>{const o=document.createElement('option');o.value=t;o.textContent=t;o.style.color=COLORS[t];if(t===r.type)o.selected=true;sel.appendChild(o);});
+    sel.addEventListener('change',()=>{r.type=sel.value;sel.dataset.t=sel.value;build();});
+    sel.addEventListener('keydown',e=>onCellKey(e,i,0));
+    tdT.appendChild(sel);
+
+    const tdN=document.createElement('td');tdN.className='col-name';
+    const nin=document.createElement('input');nin.className='cellinput';nin.type='text';nin.placeholder='Strain name';nin.value=r.name;
+    nin.addEventListener('input',()=>{r.name=nin.value;build();});
+    nin.addEventListener('keydown',e=>onCellKey(e,i,1));
+    tdN.appendChild(nin);
+
+    const tdC=document.createElement('td');tdC.className='col-thc';
+    const w=document.createElement('div');w.className='thcwrap';
+    const cin=document.createElement('input');cin.className='cellinput';cin.type='text';cin.inputMode='decimal';cin.placeholder='27';cin.value=r.thc;
+    cin.addEventListener('input',()=>{r.thc=cin.value.replace(/[^0-9.]/g,'');cin.value=r.thc;build();});
+    cin.addEventListener('keydown',e=>onCellKey(e,i,2));
+    w.appendChild(cin);tdC.appendChild(w);
+
+    const tdX=document.createElement('td');tdX.className='col-x';
+    const x=document.createElement('button');x.className='xbtn';x.textContent='×';x.title='Remove row';
+    x.addEventListener('click',()=>{data.splice(i,1);if(data.length===0)data.push(blankRow());renderRows();build();});
+    tdX.appendChild(x);
+
+    tr.append(tdT,tdN,tdC,tdX);
+    rowsEl.appendChild(tr);
+  });
+}
+
+// every grid row is one label (shown in the preview with at least its strain type)
+function filledRows(){return data;}
+function updateCount(){
+  const n=filledRows().length;const cap=LAYOUT[sizeEl.value].perPage;
+  const pages=Math.max(1,Math.ceil(n/cap));
+  document.getElementById('count').textContent = n===0 ? "No labels yet" : (n+" label"+(n>1?"s":"")+" · "+pages+" page"+(pages>1?"s":""));
+}
+
+/* ---------- build the printable sheets ---------- */
+function fitText(el,maxPx){
+  // shrink font-size until scrollWidth <= maxPx
+  let size=parseFloat(el.dataset.base);
+  el.style.fontSize=size+'px';
+  let guard=0;
+  while(el.scrollWidth>maxPx && size>6 && guard<200){ size-=1; el.style.fontSize=size+'px'; guard++; }
+}
+
+// build a white outline from layered text-shadows (prints reliably; text-stroke turns grey when printed)
+function outlineShadow(radius,color){
+  const pts=[]; const steps=16;
+  for(let a=0;a<steps;a++){ const ang=2*Math.PI*a/steps;
+    pts.push((Math.cos(ang)*radius).toFixed(2)+'px '+(Math.sin(ang)*radius).toFixed(2)+'px 0 '+color); }
+  return pts.join(',');
+}
+function makeLabel(rec,L){
+  const el=document.createElement('div');
+  el.className='label';
+  el.style.width=L.cellW+'in';el.style.height=L.cellH+'in';
+  // frame as a real <img> so it prints even when the browser's "background graphics" is off
+  const fimg=document.createElement('img');
+  fimg.className='lframe';
+  fimg.src=(L===LAYOUT.large?FRAME_LARGE:FRAME_SMALL);
+  el.appendChild(fimg);
+  const color=COLORS[rec.type]||'#111';
+  const shadow=outlineShadow(L.strokePx/2,'#ffffff');
+  const stroke=(el2)=>{ el2.style.textShadow=shadow; };
+  // each line is absolutely positioned at its fraction of the cell height (matches the PSD)
+  const line=(txt,yFrac,pt,extra)=>{
+    const d=document.createElement('div');
+    d.className='lline'+(extra||'');
+    d.textContent=txt;
+    d.style.color=color;
+    d.style.top=(yFrac*100)+'%';
+    d.dataset.base=pt; d.style.fontSize=pt+'px';
+    stroke(d);
+    el.appendChild(d);
+    return d;
+  };
+  let tEl=null;
+  if(rec.type){ tEl=line(rec.type.toUpperCase(), L.typeY, L.typePt, ' ltype');
+    if(L.typeLetterSpacing) tEl.style.letterSpacing=L.typeLetterSpacing+'em'; }
+  const n=line(rec.name, L.nameY, L.namePt);
+  if(rec.thc!=="") line(L.thcFmt(rec.thc), L.thcY, L.thcPt);
+  // fit text to frame width after it's in the DOM
+  requestAnimationFrame(()=>{
+    fitText(n,L.nameMaxIn*96);
+    if(tEl) fitText(tEl,L.typeMaxIn*96);
+  });
+  return el;
+}
+
+function build(){
+  const size=sizeEl.value;const L=LAYOUT[size];
+  const recs=filledRows();
+  printroot.innerHTML="";
+  updateCount();
+  const cap=L.perPage;
+  const pages=Math.max(1,Math.ceil(Math.max(recs.length,0)/cap)) || 1;
+  const totalPages = recs.length===0?1:Math.ceil(recs.length/cap);
+  for(let p=0;p<totalPages;p++){
+    const page=document.createElement('div');page.className='page';
+    for(let k=0;k<cap;k++){
+      const idx=p*cap+k;
+      if(idx>=recs.length) break;
+      const rec=recs[idx];
+      const col=k%L.cols, row=Math.floor(k/L.cols);
+      const lab=makeLabel(rec,L);
+      const cx=L.colCenters[col], cy=rowCenterY(L,row);
+      lab.style.left=(cx-L.cellW/2)+'in';
+      lab.style.top=(cy-L.cellH/2)+'in';
+      page.appendChild(lab);
+    }
+    printroot.appendChild(page);
+  }
+  rescale();
+}
+
+/* ---------- scale preview to fit right panel ---------- */
+function rescale(){
+  const scaler=document.getElementById('previewScaler');
+  const panel=document.getElementById('right');
+  const avail=panel.clientWidth-4;
+  const pageW=8.5*96;
+  let s=Math.min(1,avail/pageW);
+  scaler.style.transform='scale('+s+')';
+  // set height so panel scrolls correctly
+  const stack=document.getElementById('printroot');
+  scaler.style.height=(stack.offsetHeight*s)+'px';
+  scaler.style.width=pageW+'px';
+}
+window.addEventListener('resize',rescale);
+
+/* ---------- controls ---------- */
+sizeEl.addEventListener('change',build);
+document.getElementById('addRow').addEventListener('click',()=>{data.push(blankRow());renderRows();build();});
+document.getElementById('clearBtn').addEventListener('click',()=>{data=defaultRows();renderRows();build();});
+document.getElementById('printBtn').addEventListener('click',()=>{ if(filledRows().length===0){alert('Add at least one label before printing.');return;} window.print(); });
+
+/* ---------- update status (display only; the launcher does the real update) ---------- */
+function verNum(v){const p=(v+'.0.0').split('.');return (+p[0])*1e6+(+p[1])*1e3+(+p[2]);}
+function checkUpdate(){
+  const s=document.getElementById('status');
+  const vb=document.getElementById('verbadge');
+  fetch(UPDATE_BASE+'/version.txt?nocache='+Date.now(),{cache:'no-store'})
+    .then(r=>r.ok?r.text():Promise.reject())
+    .then(t=>{const rv=t.trim();
+      if(!/^\d+\.\d+\.\d+/.test(rv)){s.textContent='v'+APP_VERSION;return;}
+      if(verNum(rv)>verNum(APP_VERSION)){
+        s.textContent='v'+APP_VERSION+' · update ready — close and reopen to get v'+rv;
+        if(vb){vb.textContent='v'+APP_VERSION+' → v'+rv+' (reopen)';vb.style.background='#ffb020';vb.style.color='#3a2800';}
+      } else {
+        s.textContent='v'+APP_VERSION+' · up to date';
+      }
+    })
+    .catch(()=>{s.textContent='v'+APP_VERSION+' · offline';});
+}
+
+/* ---------- init ---------- */
+data=defaultRows();
+renderRows();build();checkUpdate();
+</script>
+</body>
+</html>

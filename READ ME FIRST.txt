@@ -1,0 +1,141 @@
+ETC LABEL MAKER  —  Emerald Triangle Cannabis  (Windows)
+========================================================
+
+Print dispensary strain labels — large or small — as a ready-to-cut sheet.
+Everything happens in one window: pick a size, type the strains, print.
+
+
+────────────────────────────────────────────────────────────
+WHAT EACH FILE DOES  (read this once — it clears up everything)
+────────────────────────────────────────────────────────────
+
+  ETC Label Maker.vbs   ← THE LAUNCHER. This is what you click.
+                          It checks GitHub, downloads a newer program if
+                          there is one, then opens it.
+                          *** This file never changes on its own. If the
+                          launcher itself is ever updated, copy the new one
+                          onto each PC — only app.html auto-downloads. ***
+
+  app.html              ← THE PROGRAM. The actual label maker.
+                          This is the file that gets updated automatically.
+
+  version.txt           ← Says which version app.html (above) is.
+
+  icon.ico              ← The little tag picture for the desktop shortcut.
+
+  app.template.html     ← (for the developer) the source the program is built
+  build.py                from. Staff can ignore these two.
+  build-assets\           Fonts + frame artwork used to build app.html.
+
+
+────────────────────────────────────────────────────────────
+!! THE ONE CONFUSING PART !!  (same as the Brand Report tool)
+────────────────────────────────────────────────────────────
+
+There are TWO version.txt files. They are NOT the same and do NOT have to match:
+
+  1. The one IN THIS FOLDER
+     Describes the app.html sitting in this folder — the backup that runs
+     if the internet is down.  >> You never touch it. <<
+
+  2. The one ON GITHUB
+     Describes the newest app.html. This is the one that tells every computer
+     "a new version exists."  >> This is the one you upload when you update. <<
+
+The launcher compares the two numbers and downloads if GitHub is newer.
+
+
+────────────────────────────────────────────────────────────
+INSTALL  (one time, ~1 minute — on each staff computer)
+────────────────────────────────────────────────────────────
+
+1. Put THIS WHOLE FOLDER somewhere permanent — Documents is a good spot.
+   Keep the files together; the launcher looks for app.html next to it.
+
+2. Right-click  "ETC Label Maker.vbs"  →  Send to  →  Desktop (create shortcut)
+
+3. (Optional — nicer icon)
+   Right-click the new Desktop shortcut  →  Properties  →  Change Icon…
+   →  Browse…  →  pick  "icon.ico"  from this folder  →  OK  →  OK
+
+4. Double-click the Desktop shortcut to run it.
+   If Windows SmartScreen warns the first time: "More info" → "Run anyway".
+
+Requirements: Google Chrome or Microsoft Edge must be installed (one of them
+almost always is). Nothing else to install — no Python, no setup.
+
+
+────────────────────────────────────────────────────────────
+USING THE PROGRAM
+────────────────────────────────────────────────────────────
+
+1. Double-click the Desktop shortcut. It opens in its own window.
+   The version number (e.g. v1.1.0) shows as a green badge at the top-left
+   so you can always tell which version you're on.
+
+2. Choose LARGE (3 labels per page) or SMALL (27 per page) at the top.
+
+3. EACH ROW IS ONE LABEL. It starts with three: Sativa, Hybrid, Indica.
+   For each label fill the row:
+      • Strain type  — Sativa, Hybrid, or Indica (sets the label color)
+      • Strain name  — the strain name
+      • THC %        — just the number (e.g. 27)
+   Press Enter or the down-arrow (or "+ Add row") to add another label;
+   click "×" to remove one. Arrow keys move between cells like a spreadsheet.
+
+4. The preview on the right shows EXACTLY what will print — one label per row.
+
+5. Click "Print labels". The print window opens — CHOOSE THE LABEL PRINTER
+   in the "Destination" box (your computer's default printer is left alone),
+   then press Print.
+      • To save a PDF instead, choose "Save as PDF" as the destination.
+
+INK SAVING: only the rows in the grid are printed. Want just one label?
+Remove the other rows with "×". Want three of the same? Put it on three rows.
+
+Label colors are fixed:  Sativa = magenta,  Hybrid = green,  Indica = purple.
+
+
+────────────────────────────────────────────────────────────
+HOW TO TELL UPDATES ARE WORKING
+────────────────────────────────────────────────────────────
+
+Top-left shows a green version badge (e.g. v1.1.0). Bottom-right shows status:
+      "up to date"        → you have the newest
+      "update ready…"     → a newer version is on GitHub; it installs the
+                            next time the shortcut is double-clicked (the
+                            badge also turns orange and shows the new number)
+      "offline"           → no internet; running the copy you have
+
+(The launcher does the actual downloading before the window opens. The status
+line is just so you can see what's going on.)
+
+
+────────────────────────────────────────────────────────────
+FOR THE OWNER — HOW TO SHIP AN UPDATE
+────────────────────────────────────────────────────────────
+
+Repo:  https://github.com/madisonhypes/etc-label-maker
+
+If you only changed wording/logic in app.html directly, skip to step 3.
+If you changed the template, fonts, or frame art:
+
+  1. Edit app.template.html (or swap files in build-assets\).
+  2. Run:   python build.py       (rebuilds app.html)
+
+  3. Bump the number in version.txt (e.g. 1.1.0 → 1.1.1). THIS IS REQUIRED —
+     if the number doesn't go up, every computer thinks it's current and skips
+     the download.
+  4. On GitHub: Add file → Upload files → drag in app.html AND version.txt →
+     Commit changes.
+
+Next time anyone opens the shortcut, they get the new version automatically.
+Nothing to reinstall, nothing to uninstall.
+
+NOTE: Changes to the LAUNCHER itself (ETC Label Maker.vbs) do NOT auto-update —
+only app.html does. If the .vbs changes, copy the new one to each PC once.
+
+Never put customer or sales data in this repo — only the program itself is
+ever downloaded.
+
+Bundled version: 1.1.0

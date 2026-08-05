@@ -21,6 +21,9 @@ support = shell.ExpandEnvironmentStrings("%LocalAppData%") & "\ETCLabelMaker"
 If Not fso.FolderExists(support) Then fso.CreateFolder support
 live = support & "\app.html"
 
+' create a pinnable Desktop shortcut once (so it can be pinned to the Windows taskbar)
+EnsurePinnableShortcut
+
 ' optional override file
 If fso.FileExists(support & "\update-url.txt") Then
   Dim u : u = Trim(ReadTextFile(support & "\update-url.txt"))
@@ -201,3 +204,31 @@ Function FirstExisting(paths)
     End If
   Next
 End Function
+
+' Create a Desktop shortcut that Windows will let you PIN to the taskbar.
+' Trick: the target is wscript.exe running this launcher (a .vbs itself can't be pinned).
+' Runs once per computer (a marker prevents it coming back after the user deletes it).
+Sub EnsurePinnableShortcut()
+  On Error Resume Next
+  Dim marker : marker = support & "\shortcut.created"
+  If fso.FileExists(marker) Then Exit Sub
+
+  Dim desktop : desktop = shell.SpecialFolders("Desktop")
+  If Len(desktop) = 0 Then Exit Sub
+
+  Dim lnkPath : lnkPath = desktop & "\ETC Label Maker.lnk"
+  Dim iconPath : iconPath = scriptDir & "\icon.ico"
+
+  Dim lnk : Set lnk = shell.CreateShortcut(lnkPath)
+  If Err.Number <> 0 Then Exit Sub
+  lnk.TargetPath = shell.ExpandEnvironmentStrings("%SystemRoot%") & "\System32\wscript.exe"
+  lnk.Arguments = """" & WScript.ScriptFullName & """"
+  lnk.WorkingDirectory = scriptDir
+  If fso.FileExists(iconPath) Then lnk.IconLocation = iconPath & ",0"
+  lnk.Description = "ETC Label Maker - Emerald Triangle Cannabis"
+  lnk.Save
+
+  ' remember we've done it, so a launch after the user deletes/pins it won't recreate it
+  If Err.Number = 0 Then WriteTextFile marker, "1"
+  On Error GoTo 0
+End Sub

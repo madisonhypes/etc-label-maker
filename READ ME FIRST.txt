@@ -52,17 +52,22 @@ INSTALL  (one time, ~1 minute — on each staff computer)
 1. Put THIS WHOLE FOLDER somewhere permanent — Documents is a good spot.
    Keep the files together; the launcher looks for app.html next to it.
 
-2. Right-click  "ETC Label Maker.vbs"  →  Send to  →  Desktop (create shortcut)
-
-3. (Optional — nicer icon)
-   Right-click the new Desktop shortcut  →  Properties  →  Change Icon…
-   →  Browse…  →  pick  "icon.ico"  from this folder  →  OK  →  OK
-
-4. Double-click the Desktop shortcut to run it.
+2. Double-click  "ETC Label Maker.vbs"  once.
    If Windows SmartScreen warns the first time: "More info" → "Run anyway".
+   The app opens AND a pinnable "ETC Label Maker" shortcut (with the tag icon)
+   is placed on your Desktop automatically.
+
+3. PIN TO TASKBAR (optional but handy):
+   Right-click the new Desktop "ETC Label Maker" shortcut →
+   "Show more options" → "Pin to taskbar".
+   (If that option isn't there, just DRAG the shortcut onto the taskbar.)
+   You can then delete the Desktop shortcut — the taskbar pin stays.
 
 Requirements: Google Chrome or Microsoft Edge must be installed (one of them
 almost always is). Nothing else to install — no Python, no setup.
+
+Note: the pinnable shortcut is created once per computer. If you delete it and
+want it back, delete  %LocalAppData%\ETCLabelMaker\shortcut.created  and relaunch.
 
 
 ────────────────────────────────────────────────────────────

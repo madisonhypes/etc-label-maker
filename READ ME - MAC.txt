@@ -1,0 +1,76 @@
+ETC LABEL MAKER  —  Mac setup  (Emerald Triangle Cannabis)
+==========================================================
+
+The label maker itself works on a Mac. Only the *launcher* is different from
+Windows (the .vbs file is Windows-only). Use the file:
+
+    ETC Label Maker (Mac).command
+
+It does the same job as the Windows launcher: checks GitHub for a newer
+version, downloads it, and opens the app — no reinstalling, ever.
+
+RECOMMENDED BROWSER: install Google Chrome (or Microsoft Edge) on the Mac.
+Chrome prints the 4x2 box labels reliably and opens the app in its own clean
+window. Safari works for typing labels but is less reliable at printing the
+custom 4x2 size, so Chrome is strongly preferred for the Rollo.
+
+
+────────────────────────────────────────────────────────────
+ONE-TIME SETUP  (about 2 minutes)
+────────────────────────────────────────────────────────────
+
+1. Copy this WHOLE folder onto the Mac (Documents is a good spot). Keep the
+   files together — the launcher looks for app.html next to it.
+
+2. Make the launcher runnable. Open the Terminal app (Applications >
+   Utilities > Terminal) and run this once — drag the .command file onto the
+   Terminal window to fill in the path automatically, or type:
+
+       chmod +x "/path/to/ETC Label Maker (Mac).command"
+
+   (Tip: type  chmod +x  followed by a space, then DRAG the
+   "ETC Label Maker (Mac).command" file into the Terminal window, then press
+   Return. That pastes the exact path for you.)
+
+3. Double-click "ETC Label Maker (Mac).command".
+   The FIRST time, macOS may say it "cannot be opened because it is from an
+   unidentified developer." If so:
+        Right-click (or Control-click) the file > Open > Open.
+   You only have to do this once. A small Terminal window flashes open while
+   it checks for updates — that's normal; the app opens in Chrome.
+
+4. (Optional) Put it where it's easy to reach:
+   - Drag the "ETC Label Maker (Mac).command" file to the Desktop, OR
+   - Right-click it > Make Alias, and drag the alias to the Desktop or Dock.
+
+
+────────────────────────────────────────────────────────────
+USING IT / UPDATES
+────────────────────────────────────────────────────────────
+
+Same as Windows: double-click to open. Each launch it quietly checks GitHub
+and grabs the newest version if there is one. When you (the owner) upload a
+new app.html + version.txt to the repo, her Mac gets it on the next launch.
+
+PRINTING THE 4x2 BOX LABELS (Chrome on Mac):
+   File > Print (or Cmd+P), then:
+     • Destination: the Rollo
+     • Paper size:  4 x 2 in  (100 x 50 mm)
+     • Scale:       100%  (not "Fit to printable area")
+     • Margins:     None / Minimum
+   As on Windows, if 4x2 isn't offered, set the Rollo's default label size to
+   4x2 in System Settings > Printers & Scanners > (Rollo) > Options/Presets.
+
+
+────────────────────────────────────────────────────────────
+SIMPLEST ALTERNATIVE  (no auto-update)
+────────────────────────────────────────────────────────────
+
+If you don't want to bother with the launcher, she can just double-click
+app.html itself to open it in her default browser. It works exactly the same
+to make and print labels — the only difference is it won't auto-update, so
+when you ship a new version you'd send her the new app.html to drop in.
+
+NOTE: the Windows launcher (ETC Label Maker.vbs) and the Mac launcher
+(.command) do NOT auto-update themselves — only app.html does. If either
+launcher changes, copy the new one to each computer once.

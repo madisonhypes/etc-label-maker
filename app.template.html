@@ -63,7 +63,7 @@ select#labelSize{
 /* ---------- main split ---------- */
 #main{display:flex;flex:1;min-height:0}
 #left{
-  width:46%;min-width:420px;max-width:640px;
+  width:48%;min-width:452px;max-width:700px;
   padding:18px 20px;overflow:auto;border-right:1px solid var(--line);
 }
 #right{flex:1;min-width:0;overflow:auto;background:#0c0e13;padding:22px;display:flex;flex-direction:column;align-items:center}
@@ -71,41 +71,80 @@ select#labelSize{
 .hint{font-size:12.5px;color:var(--muted);margin:0 0 14px}
 
 /* ---------- grid table ---------- */
-table.grid{width:100%;border-collapse:separate;border-spacing:0}
+table.grid{width:100%;table-layout:fixed;border-collapse:separate;border-spacing:0}
 table.grid th{
   text-align:left;font-size:11.5px;letter-spacing:.6px;text-transform:uppercase;
-  color:var(--muted);padding:0 8px 8px;font-weight:700;
+  color:var(--muted);padding:0 8px 8px;font-weight:700;overflow:hidden;
 }
 table.grid td{padding:0 6px 8px}
 table.grid td:first-child,table.grid th:first-child{padding-left:0}
-.cellinput,select.typesel{
-  width:100%;font-size:15px;padding:10px 11px;border-radius:8px;
+.cellinput,.typesel,.typeprefix,.thcinput,.thcmode{
+  font-size:15px;padding:10px 9px;border-radius:8px;
   background:var(--panel);border:1px solid var(--line);color:var(--ink);
 }
-.cellinput:focus,select.typesel:focus{outline:none;border-color:var(--accent2)}
-.col-type{width:34%}
-.col-name{width:auto}
-.col-thc{width:20%}
-.col-x{width:30px}
-select.typesel{cursor:pointer;font-weight:700}
-select.typesel[data-t="Sativa"]{color:var(--sativa)}
-select.typesel[data-t="Hybrid"]{color:var(--hybrid)}
-select.typesel[data-t="Indica"]{color:var(--indica)}
-.thcwrap{position:relative}
-.thcwrap::after{content:'%';position:absolute;right:11px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:14px;pointer-events:none}
-.thcwrap .cellinput{padding-right:26px}
+.cellinput{width:100%}
+.cellinput:focus,.typesel:focus,.typeprefix:focus,.thcinput:focus,.thcmode:focus{outline:none;border-color:var(--accent2)}
+.col-type{width:182px}     /* custom box + strain dropdown */
+.col-name{width:auto}      /* the strain name gets the remaining space */
+.col-thc{width:124px}      /* THC value + THC/NONE mode */
+.col-x{width:24px}
+.col-name .cellinput{font-size:15px}
+.typewrap,.thccell{display:flex;gap:5px;align-items:stretch}
+.typeprefix{flex:0 0 90px;min-width:0;font-weight:700;text-transform:uppercase;font-size:13px;padding:10px 7px}
+.typeprefix::placeholder{color:var(--muted);font-weight:400;text-transform:none}
+.typesel{flex:1 1 auto;min-width:0;max-width:92px;padding-right:6px;font-weight:700;cursor:pointer}
+.typesel[data-t="Sativa"]{color:var(--sativa)}
+.typesel[data-t="Hybrid"]{color:var(--hybrid)}
+.typesel[data-t="Indica"]{color:var(--indica)}
+.thcinput{flex:1 1 auto;min-width:0}
+.thcmode{flex:0 0 64px;min-width:0;font-weight:700;font-size:12px;padding:10px 5px;cursor:pointer}
+/* box-label grid columns */
+.bcol-brand{width:20%}
+.bcol-strain{width:auto}
+.bcol-type{width:20%}
+.bcol-case{width:138px}
+.casecell{display:flex;gap:5px;align-items:stretch}
+.casecount{flex:0 0 42px;min-width:0;text-align:center}
+.dupbtn{flex:1 1 auto;padding:0 8px;border-radius:8px;border:1px solid var(--line);background:var(--panel2);
+  color:var(--ink);font-weight:800;font-size:12.5px;cursor:pointer;line-height:1;white-space:nowrap}
+.dupbtn:hover{border-color:var(--accent);color:var(--accent)}
+/* "add another strain, same brand & type" button (box rows) */
+.strainwrap{display:flex;gap:6px;align-items:stretch}
+.strainwrap .cellinput{flex:1 1 auto;min-width:0}
+.samebtn{flex:0 0 auto;width:30px;padding:0;border-radius:8px;border:1px dashed var(--line);background:transparent;
+  color:var(--muted);font-weight:800;font-size:16px;cursor:pointer;line-height:1;white-space:nowrap}
+.samebtn:hover{border-color:var(--accent);color:var(--accent)}
+/* cross-label link bar */
+#linkbar{display:flex;gap:20px;align-items:center;padding:9px 18px;border-bottom:1px solid var(--line);
+  background:var(--panel2);flex-wrap:wrap;font-size:13px}
+.linklabel{color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px;font-size:11px}
+.linkchk{display:inline-flex;gap:7px;align-items:center;cursor:pointer;color:var(--ink);user-select:none;font-weight:600}
+.linkchk input{width:16px;height:16px;cursor:pointer;accent-color:var(--accent)}
+#linkmsg{color:var(--accent);font-size:12.5px;font-weight:600}
+#lnkToLarge,#lnkToSmall{display:none}
+body.size-box #lnkToBox{display:none}
+body.size-box #lnkToLarge,body.size-box #lnkToSmall{display:inline-flex}
 .xbtn{
   width:28px;height:28px;border-radius:7px;border:1px solid var(--line);
   background:transparent;color:var(--muted);cursor:pointer;font-size:15px;line-height:1;
 }
 .xbtn:hover{color:#ff6b6b;border-color:#5a2b2b}
+/* paired-copy rows (small labels) */
+tr.copyrow td,tr.addcopy td{padding-top:0;padding-bottom:9px}
+.copycell{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted);
+  border:1px dashed var(--line);border-radius:8px;padding:8px 11px;
+  background:repeating-linear-gradient(45deg,transparent,transparent 6px,rgba(255,255,255,.02) 6px,rgba(255,255,255,.02) 12px)}
+.copycell .cdot{font-size:15px;color:var(--accent2)}
+.addcopybtn{font-size:12.5px;color:var(--muted);background:transparent;border:1px dashed var(--line);
+  border-radius:8px;padding:8px 11px;cursor:pointer}
+.addcopybtn:hover{color:var(--ink);border-color:var(--accent2)}
 .gridfoot{display:flex;align-items:center;gap:14px;margin-top:6px}
 #addRow{font-size:13px}
 #count{font-size:12.5px;color:var(--muted);margin-left:auto}
 
 /* ---------- preview ---------- */
 #previewTitle{align-self:flex-start;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin:0 0 12px}
-#previewScaler{transform-origin:top center}
+#previewScaler{transform-origin:top left}
 .sheetStack{display:flex;flex-direction:column;gap:26px}
 
 /* ---------- printable sheet (real Letter size) ---------- */
@@ -113,6 +152,7 @@ select.typesel[data-t="Indica"]{color:var(--indica)}
   width:8.5in;height:11in;background:#fff;position:relative;overflow:hidden;
   box-shadow:0 6px 30px rgba(0,0,0,.5);
 }
+.page.boxpage{width:4in;height:2in}   /* Rollo box label */
 .label{position:absolute;
   -webkit-print-color-adjust:exact;print-color-adjust:exact;}
 .label .lframe{position:absolute;left:0;top:0;width:100%;height:100%;z-index:0;pointer-events:none}
@@ -120,17 +160,29 @@ select.typesel[data-t="Indica"]{color:var(--indica)}
   font-family:'LabelFont';font-weight:500;line-height:1;white-space:nowrap;text-align:center}
 .label .ltype{text-transform:uppercase}
 
+/* ---------- box label (4x2 inventory label, black text, no frame) ---------- */
+.boxlabel{position:relative;width:4in;height:2in;background:#fff;color:#000;overflow:hidden;
+  font-family:'LabelFont';-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.boxlabel div{position:absolute;line-height:1;white-space:nowrap}
+/* top row: type (left) + case number (right), both large & equal */
+.bl-type{top:0.13in;left:0.2in;font-weight:600;font-size:34px}
+.bl-case{top:0.13in;right:0.2in;font-weight:700;font-size:34px}
+/* brand + strain sit lower; strain uses the condensed LabelFont, brand a contrasting serif */
+.bl-brand{top:0.56in;left:50%;transform:translateX(-50%);text-align:center;font-weight:700;font-size:46px;text-transform:uppercase;letter-spacing:.5px;font-family:Georgia,'Times New Roman',serif}
+.bl-strain{top:1.48in;left:50%;transform:translate(-50%,-50%);font-weight:700;font-size:66px;text-transform:uppercase;letter-spacing:.3px}
+
 /* cut guides */
-.cutmark{position:absolute;background:#111}
+.cutmark{position:absolute;width:0;border-left:1px solid #000;
+  -webkit-print-color-adjust:exact;print-color-adjust:exact}
 
 /* ---------- print ---------- */
-@page{size:letter;margin:0}
+/* @page size is set at runtime by setPageSize() via #pageStyle (letter for large/small, 4x2 for box) */
 @media print{
-  #topbar,#left,#previewTitle{display:none!important}
+  #topbar,#linkbar,#left,#previewTitle{display:none!important}
   body{background:#fff}
   #main{display:block}
   #right{padding:0;background:#fff;display:block;overflow:visible}
-  #previewScaler{transform:none!important}
+  #previewScaler{transform:none!important;zoom:1!important}
   .sheetStack{gap:0}
   .page{box-shadow:none;page-break-after:always;break-after:page}
   .page:last-child{page-break-after:auto}
@@ -155,6 +207,7 @@ select.typesel[data-t="Indica"]{color:var(--indica)}
     <select id="labelSize">
       <option value="large">Large (3 per page)</option>
       <option value="small">Small (27 per page)</option>
+      <option value="box">Box Label — Rollo 4×2</option>
     </select>
   </div>
   <div class="spacer"></div>
@@ -162,9 +215,17 @@ select.typesel[data-t="Indica"]{color:var(--indica)}
   <button class="btn primary" id="printBtn">🖨 Print labels</button>
 </div>
 
+<div id="linkbar">
+  <span class="linklabel">Cross-label</span>
+  <label class="linkchk" id="lnkToBox"><input type="checkbox" id="chkToBox"> Also create Box labels from these strains</label>
+  <label class="linkchk" id="lnkToLarge"><input type="checkbox" id="chkBoxToLarge"> Also create Large labels</label>
+  <label class="linkchk" id="lnkToSmall"><input type="checkbox" id="chkBoxToSmall"> Also create Small labels</label>
+  <span id="linkmsg"></span>
+</div>
+
 <div id="main">
   <div id="left">
-    <p class="hint">Each row is one label. Pick the strain type, then type the strain name and THC%. Press Enter or ↓ to add another row, or × to remove one. The preview on the right shows exactly what prints — only these rows.</p>
+    <p class="hint">Each row is one label. The strain dropdown (Sativa / Hybrid / Indica) sets the color. Type in the <b>Custom</b> box to replace the strain word with your own (e.g. CRUSHED-INDICA) — color still follows the dropdown. For THC: type the value and choose <b>THC</b> (prints THC:xx% on large, xx% on small) or <b>NONE</b> (prints exactly what you type). Then the strain name. Enter or ↓ adds a row, × removes one.</p>
     <table class="grid">
       <thead>
         <tr>
@@ -196,6 +257,14 @@ const APP_VERSION="__VERSION__";
 const UPDATE_BASE="https://raw.githubusercontent.com/madisonhypes/etc-label-maker/main";
 
 const COLORS={Sativa:"#FF00FF",Hybrid:"#00C62D",Indica:"#6600FF"};
+// pick the color from whichever strain word appears in the type text (so CRUSHED-INDICA -> purple)
+function strainColorOf(t){
+  const u=(t||'').toLowerCase();
+  if(u.indexOf('sativa')>=0) return COLORS.Sativa;
+  if(u.indexOf('hybrid')>=0) return COLORS.Hybrid;
+  if(u.indexOf('indica')>=0) return COLORS.Indica;
+  return null;
+}
 
 /* ---- geometry per size (inches; positions are label CENTERS on the 8.5x11 page) ---- */
 const LAYOUT={
@@ -213,11 +282,11 @@ const LAYOUT={
   small:{
     cols:3,
     cellW:2.213, cellH:1.147,
-    colCenters:[2.07, 4.25, 6.43],
+    colCenters:[2.15, 4.25, 6.35],
     firstRowY:1.017, rowPitch:1.095, numRows:9,
     typeY:0.165, nameY:0.440, thcY:0.740,
     typePt:28, namePt:31, thcPt:36, strokePx:4.1, typeLetterSpacing:0.01,
-    nameMaxIn:1.90, typeMaxIn:1.25,
+    nameMaxIn:1.85, typeMaxIn:1.22,
     thcFmt:v=>v+"%"
   }
 };
@@ -228,21 +297,36 @@ LAYOUT.large.perPage = LAYOUT.large.cols * LAYOUT.large.rows;
 LAYOUT.small.perPage = LAYOUT.small.cols * LAYOUT.small.rows;
 function rowCenterY(L,row){ return L.rowCenters ? L.rowCenters[row] : (L.firstRowY + row*L.rowPitch); }
 
-let data=[]; // {type,name,thc}
+// Large and Small keep their own independent rows; `data` points at the active size's set.
+let store={};
+let data=[]; // rows for the currently selected size: {type,prefix,name,thc,paired}
 const rowsEl=document.getElementById('rows');
 const sizeEl=document.getElementById('labelSize');
 const printroot=document.getElementById('printroot');
+const chkToBox=document.getElementById('chkToBox');
+const chkBoxToLarge=document.getElementById('chkBoxToLarge');
+const chkBoxToSmall=document.getElementById('chkBoxToSmall');
 
-function blankRow(){return {type:"Sativa",name:"",thc:""};}
-function defaultRows(){return [{type:"Sativa",name:"",thc:""},{type:"Hybrid",name:"",thc:""},{type:"Indica",name:"",thc:""}];}
+function blankRow(){return {type:"Sativa",custom:"",name:"",thc:"",thcMode:"THC"};}
+function defaultRows(){return [{type:"Sativa",custom:"",name:"",thc:"",thcMode:"THC"},{type:"Hybrid",custom:"",name:"",thc:"",thcMode:"THC"},{type:"Indica",custom:"",name:"",thc:"",thcMode:"THC"}];}
+function hasContent(r){ return (r.name||'').trim()!=='' || (r.thc||'').trim()!==''; }
+// should this row print a 2nd copy? SMALL auto-pairs (on unless ×'d off); LARGE only when duplicated.
+function wantsCopy(r){ return sizeEl.value==='small' ? (r.paired!==false) : (r.paired===true); }
+// strain-type text: a custom entry overrides the Sativa/Hybrid/Indica word (color still comes from the dropdown)
+function typeText(r){ const c=(r.custom||'').trim(); return c ? c : r.type; }
+// THC line: "THC" mode wraps the value (THC:xx% on large, xx% on small); "NONE" mode shows the raw custom value
+function thcText(r,isSmall){ const v=(r.thc||'').trim(); if(!v) return ''; if(r.thcMode==='NONE') return v; return isSmall ? (v+'%') : ('THC:'+v+'%'); }
 
 /* ---------- spreadsheet-style keyboard navigation ---------- */
-function cellsOf(tr){return [tr.querySelector('select.typesel'),
-  tr.querySelector('td.col-name input'), tr.querySelector('td.col-thc input')];}
+function cellsOf(tr){
+  if(sizeEl.value==='box') return [tr.querySelector('.bcol-brand input'),tr.querySelector('.bcol-strain input'),tr.querySelector('.bcol-type input')];
+  return [tr.querySelector('.typesel'), tr.querySelector('td.col-name input'), tr.querySelector('td.col-thc input')];
+}
+function newRow(){ return sizeEl.value==='box' ? blankBoxRow() : blankRow(); }
 function focusCell(r,c,caret){
   if(r<0||c<0||c>2) return;
-  if(r>=data.length){ data.push(blankRow()); renderRows(); build(); }
-  const tr=rowsEl.children[r]; if(!tr) return;
+  if(r>=data.length){ data.push(newRow()); renderRows(); build(); }
+  const tr=rowsEl.querySelector('tr[data-idx="'+r+'"]'); if(!tr) return;
   const el=cellsOf(tr)[c]; if(!el) return;
   el.focus();
   if(el.tagName==='INPUT'){ const L=el.value.length; const p=(caret==='start')?0:L; try{el.setSelectionRange(p,p);}catch(e){} }
@@ -251,36 +335,52 @@ function onCellKey(e,r,c){
   const el=e.target, isInput=el.tagName==='INPUT';
   const atEnd = !isInput || (el.selectionStart===el.value.length && el.selectionStart===el.selectionEnd);
   const atStart = !isInput || (el.selectionStart===0 && el.selectionEnd===0);
-  if(e.key==='ArrowDown'||e.key==='Enter'){ e.preventDefault(); focusCell(r+1,c); }
-  else if(e.key==='ArrowUp'){ e.preventDefault(); focusCell(r-1,c); }
+  const combo = (c===0 && sizeEl.value!=='box'); // strain dropdown: leave Up/Down/Enter to it (not box brand input)
+  if(!combo && (e.key==='ArrowDown'||e.key==='Enter')){ e.preventDefault(); focusCell(r+1,c); }
+  else if(!combo && e.key==='ArrowUp'){ e.preventDefault(); focusCell(r-1,c); }
   else if(e.key==='ArrowRight' && atEnd){ e.preventDefault(); if(c<2) focusCell(r,c+1,'start'); else focusCell(r+1,0,'start'); }
   else if(e.key==='ArrowLeft' && atStart){ e.preventDefault(); if(c>0) focusCell(r,c-1,'end'); else if(r>0) focusCell(r-1,2,'end'); }
 }
 
 function renderRows(){
   rowsEl.innerHTML="";
+  renderHeader();
+  if(sizeEl.value==='box'){ data.forEach((r,i)=>rowsEl.appendChild(renderBoxRow(r,i))); return; }
+  const small=sizeEl.value==='small';
   data.forEach((r,i)=>{
     const tr=document.createElement('tr');
+    tr.dataset.idx=i;
 
     const tdT=document.createElement('td');tdT.className='col-type';
+    const twrap=document.createElement('div');twrap.className='typewrap';
+    // custom entry — overrides the SATIVA/HYBRID/INDICA word (blank = use the dropdown word)
+    const pin=document.createElement('input');pin.className='typeprefix';pin.type='text';pin.placeholder='Custom';pin.value=r.custom||'';
+    pin.title='Custom wording that replaces the strain word — the dropdown still sets the color';
+    pin.addEventListener('input',()=>{r.custom=pin.value;build();});
+    // the strain dropdown (native, colored options) — always sets the color
     const sel=document.createElement('select');sel.className='typesel';sel.dataset.t=r.type;
     ["Sativa","Hybrid","Indica"].forEach(t=>{const o=document.createElement('option');o.value=t;o.textContent=t;o.style.color=COLORS[t];if(t===r.type)o.selected=true;sel.appendChild(o);});
     sel.addEventListener('change',()=>{r.type=sel.value;sel.dataset.t=sel.value;build();});
     sel.addEventListener('keydown',e=>onCellKey(e,i,0));
-    tdT.appendChild(sel);
+    twrap.append(pin,sel);
+    tdT.appendChild(twrap);
 
     const tdN=document.createElement('td');tdN.className='col-name';
     const nin=document.createElement('input');nin.className='cellinput';nin.type='text';nin.placeholder='Strain name';nin.value=r.name;
-    nin.addEventListener('input',()=>{r.name=nin.value;build();});
+    nin.addEventListener('input',()=>{r.name=nin.value;refreshPairRow(i);build();});
     nin.addEventListener('keydown',e=>onCellKey(e,i,1));
     tdN.appendChild(nin);
 
     const tdC=document.createElement('td');tdC.className='col-thc';
-    const w=document.createElement('div');w.className='thcwrap';
-    const cin=document.createElement('input');cin.className='cellinput';cin.type='text';cin.inputMode='decimal';cin.placeholder='27';cin.value=r.thc;
-    cin.addEventListener('input',()=>{r.thc=cin.value.replace(/[^0-9.]/g,'');cin.value=r.thc;build();});
+    const w=document.createElement('div');w.className='thccell';
+    const cin=document.createElement('input');cin.className='thcinput';cin.type='text';cin.placeholder='27';cin.value=r.thc;
+    cin.addEventListener('input',()=>{r.thc=cin.value;refreshPairRow(i);build();});
     cin.addEventListener('keydown',e=>onCellKey(e,i,2));
-    w.appendChild(cin);tdC.appendChild(w);
+    // mode: "THC" wraps the value (THC:xx% / xx%); "NONE" prints the value exactly as typed
+    const tmode=document.createElement('select');tmode.className='thcmode';tmode.title='THC = format as THC%. NONE = show exactly what you type.';
+    ["THC","NONE"].forEach(m=>{const o=document.createElement('option');o.value=m;o.textContent=m;if(m===(r.thcMode||'THC'))o.selected=true;tmode.appendChild(o);});
+    tmode.addEventListener('change',()=>{r.thcMode=tmode.value;build();});
+    w.append(cin,tmode);tdC.appendChild(w);
 
     const tdX=document.createElement('td');tdX.className='col-x';
     const x=document.createElement('button');x.className='xbtn';x.textContent='×';x.title='Remove row';
@@ -289,15 +389,80 @@ function renderRows(){
 
     tr.append(tdT,tdN,tdC,tdX);
     rowsEl.appendChild(tr);
+
+    // a filled row shows a copy row below it (SMALL: on by default; LARGE: only after Duplicate)
+    if(hasContent(r)) rowsEl.appendChild(wantsCopy(r) ? buildCopyRow(r) : buildAddCopyRow(r));
   });
 }
+function buildCopyRow(r){
+  const ctr=document.createElement('tr');ctr.className='copyrow';
+  const c1=document.createElement('td');c1.colSpan=3;
+  const cc=document.createElement('div');cc.className='copycell';
+  cc.innerHTML='<span class="cdot">&#8627;</span> Copy — prints a 2nd identical label directly below';
+  c1.appendChild(cc);
+  const c2=document.createElement('td');c2.className='col-x';
+  const cxb=document.createElement('button');cxb.className='xbtn';cxb.textContent='×';cxb.title="Remove this copy";
+  cxb.addEventListener('click',()=>{r.paired=false;renderRows();build();});
+  c2.appendChild(cxb);ctr.append(c1,c2);return ctr;
+}
+function buildAddCopyRow(r){
+  const atr=document.createElement('tr');atr.className='addcopy';
+  const a1=document.createElement('td');a1.colSpan=4;
+  const ab=document.createElement('button');ab.className='addcopybtn';ab.textContent='+ Duplicate — print a 2nd copy directly below';
+  ab.addEventListener('click',()=>{r.paired=true;renderRows();build();});
+  a1.appendChild(ab);atr.appendChild(a1);return atr;
+}
+// add/remove the pair row under primary i without re-rendering the whole grid (keeps typing focus)
+function refreshPairRow(i){
+  const tr=rowsEl.querySelector('tr[data-idx="'+i+'"]'); if(!tr) return;
+  const nx=tr.nextElementSibling;
+  if(nx && (nx.classList.contains('copyrow')||nx.classList.contains('addcopy'))) nx.remove();
+  const r=data[i];
+  if(hasContent(r)) tr.after(wantsCopy(r) ? buildCopyRow(r) : buildAddCopyRow(r));
+}
 
-// every grid row is one label (shown in the preview with at least its strain type)
-function filledRows(){return data;}
+// the labels that actually print: every row, plus a copy when that row wants one
+function outputRows(){
+  const out=[];
+  data.forEach(r=>{ out.push(r); if(hasContent(r) && wantsCopy(r)) out.push(r); });
+  return out;
+}
+// where each label goes on the sheet.
+// SMALL: originals fill left-to-right across the top row of a 2-row band; each paired copy
+//        goes in the row directly below its original. Next band starts two rows down.
+// LARGE: single column, 3 per page.
+function computeLayout(){
+  const size=sizeEl.value, L=LAYOUT[size], cols=L.cols;
+  const placements=[];
+  if(size==='small'){
+    const bands=Math.floor(L.rows/2), perPage=cols*bands;   // 4 bands x 3 cols = 12 originals/page
+    data.forEach((r,idx)=>{
+      const pageIdx=Math.floor(idx/perPage), inPage=idx%perPage;
+      const band=Math.floor(inPage/cols), col=inPage%cols, rowTop=band*2;
+      placements.push({rec:r,page:pageIdx,col,row:rowTop});
+      if(hasContent(r) && wantsCopy(r)) placements.push({rec:r,page:pageIdx,col,row:rowTop+1});
+    });
+  } else {
+    // large: single column; a duplicated label prints in the cell directly below (kept on the same page)
+    const per=L.perPage; let cursor=0;
+    data.forEach(r=>{
+      if(hasContent(r) && wantsCopy(r)){
+        if(cursor%per===per-1) cursor++;                 // don't split a pair across pages
+        placements.push({rec:r,page:Math.floor(cursor/per),col:0,row:cursor%per});
+        placements.push({rec:r,page:Math.floor((cursor+1)/per),col:0,row:(cursor+1)%per});
+        cursor+=2;
+      } else {
+        placements.push({rec:r,page:Math.floor(cursor/per),col:0,row:cursor%per});
+        cursor++;
+      }
+    });
+  }
+  const pages = placements.length ? Math.max.apply(null,placements.map(p=>p.page))+1 : 1;
+  return {placements,pages,labelCount:placements.length};
+}
 function updateCount(){
-  const n=filledRows().length;const cap=LAYOUT[sizeEl.value].perPage;
-  const pages=Math.max(1,Math.ceil(n/cap));
-  document.getElementById('count').textContent = n===0 ? "No labels yet" : (n+" label"+(n>1?"s":"")+" · "+pages+" page"+(pages>1?"s":""));
+  const {labelCount,pages}=computeLayout();
+  document.getElementById('count').textContent = labelCount===0 ? "No labels yet" : (labelCount+" label"+(labelCount>1?"s":"")+" · "+pages+" page"+(pages>1?"s":""));
 }
 
 /* ---------- build the printable sheets ---------- */
@@ -325,7 +490,7 @@ function makeLabel(rec,L){
   fimg.className='lframe';
   fimg.src=(L===LAYOUT.large?FRAME_LARGE:FRAME_SMALL);
   el.appendChild(fimg);
-  const color=COLORS[rec.type]||'#111';
+  const color=COLORS[rec.type]||'#111';  // color always from the Sativa/Hybrid/Indica dropdown
   const shadow=outlineShadow(L.strokePx/2,'#ffffff');
   const stroke=(el2)=>{ el2.style.textShadow=shadow; };
   // each line is absolutely positioned at its fraction of the cell height (matches the PSD)
@@ -341,10 +506,12 @@ function makeLabel(rec,L){
     return d;
   };
   let tEl=null;
-  if(rec.type){ tEl=line(rec.type.toUpperCase(), L.typeY, L.typePt, ' ltype');
+  const tt=typeText(rec);   // custom entry overrides the strain word (both sizes)
+  if(tt){ tEl=line(tt.toUpperCase(), L.typeY, L.typePt, ' ltype');
     if(L.typeLetterSpacing) tEl.style.letterSpacing=L.typeLetterSpacing+'em'; }
   const n=line(rec.name, L.nameY, L.namePt);
-  if(rec.thc!=="") line(L.thcFmt(rec.thc), L.thcY, L.thcPt);
+  const th=thcText(rec, L===LAYOUT.small);
+  if(th) line(th, L.thcY, L.thcPt);
   // fit text to frame width after it's in the DOM
   requestAnimationFrame(()=>{
     fitText(n,L.nameMaxIn*96);
@@ -353,52 +520,218 @@ function makeLabel(rec,L){
   return el;
 }
 
-function build(){
-  const size=sizeEl.value;const L=LAYOUT[size];
-  const recs=filledRows();
-  printroot.innerHTML="";
-  updateCount();
-  const cap=L.perPage;
-  const pages=Math.max(1,Math.ceil(Math.max(recs.length,0)/cap)) || 1;
-  const totalPages = recs.length===0?1:Math.ceil(recs.length/cap);
-  for(let p=0;p<totalPages;p++){
-    const page=document.createElement('div');page.className='page';
-    for(let k=0;k<cap;k++){
-      const idx=p*cap+k;
-      if(idx>=recs.length) break;
-      const rec=recs[idx];
-      const col=k%L.cols, row=Math.floor(k/L.cols);
-      const lab=makeLabel(rec,L);
-      const cx=L.colCenters[col], cy=rowCenterY(L,row);
-      lab.style.left=(cx-L.cellW/2)+'in';
-      lab.style.top=(cy-L.cellH/2)+'in';
-      page.appendChild(lab);
-    }
-    printroot.appendChild(page);
+// vertical cut guides at the column boundaries, in the top and bottom margins (small labels)
+function addCutMarks(pageEl,L){
+  const c=L.colCenters, p=(c.length>1)?(c[1]-c[0]):L.cellW;
+  const xs=[c[0]-p/2]; c.forEach(cx=>xs.push(cx+p/2));   // one boundary on each side of every column
+  const tick=0.22;
+  xs.forEach(x=>{
+    ['top','bottom'].forEach(side=>{
+      const m=document.createElement('div');m.className='cutmark';
+      m.style.left=x+'in';m.style.height=tick+'in';m.style[side]='0';
+      pageEl.appendChild(m);
+    });
+  });
+}
+/* ---------- box label (Rollo 4x2 inventory label) ---------- */
+function blankBoxRow(){ return {brand:"", strain:"", type:"", count:1}; }
+function boxHasContent(r){ return !!((r.brand||'').trim()||(r.strain||'').trim()||(r.type||'').trim()); }
+// seed Box from Large ONCE (first time Box is ever opened). After that, cross-label linking
+// (the checkboxes) is the only thing that moves names between sizes — so re-opening Box never
+// silently re-pulls Large names.
+function syncBoxFromLarge(){
+  if(store.box!==null && store.box!==undefined){
+    if(store.box.length===0) store.box.push(blankBoxRow());
+    return;
   }
+  store.box=[];
+  var seen={};
+  (store.large||[]).forEach(function(r){
+    var nm=(r.name||'').trim();
+    if(nm && !seen[nm]){ store.box.push({brand:"", strain:nm, type:"", count:1}); seen[nm]=true; }
+  });
+  if(store.box.length===0) store.box.push(blankBoxRow());
+}
+function setPageSize(){
+  var st=document.getElementById('pageStyle');
+  if(!st){ st=document.createElement('style'); st.id='pageStyle'; document.head.appendChild(st); }
+  st.textContent = (sizeEl.value==='box') ? '@page{size:4in 2in;margin:0}' : '@page{size:letter;margin:0}';
+}
+function renderHeader(){
+  var tr=document.querySelector('.grid thead tr'); if(!tr) return;
+  if(sizeEl.value==='box'){
+    tr.innerHTML='<th class="bcol-brand">Brand</th><th class="bcol-strain">Strain</th><th class="bcol-type">Type</th><th class="bcol-case">Case number</th><th class="col-x"></th>';
+  } else {
+    tr.innerHTML='<th class="col-type">Strain type</th><th class="col-name">Strain name</th><th class="col-thc">THC %</th><th class="col-x"></th>';
+  }
+}
+function renderBoxRow(r,i){
+  var tr=document.createElement('tr'); tr.dataset.idx=i;
+  function mkTd(cls){ var td=document.createElement('td'); td.className=cls; return td; }
+  function mkIn(ph,val){ var el=document.createElement('input'); el.className='cellinput'; el.type='text'; el.placeholder=ph; el.value=val||''; return el; }
+  var tdB=mkTd('bcol-brand'), bin=mkIn('Brand',r.brand);
+  bin.addEventListener('input',function(){r.brand=bin.value;build();}); bin.addEventListener('keydown',function(e){onCellKey(e,i,0);}); tdB.appendChild(bin);
+  var tdS=mkTd('bcol-strain'), swrap=document.createElement('div'); swrap.className='strainwrap';
+  var sin=mkIn('Strain',r.strain);
+  sin.addEventListener('input',function(){r.strain=sin.value;build();}); sin.addEventListener('keydown',function(e){onCellKey(e,i,1);});
+  var same=document.createElement('button'); same.className='samebtn'; same.textContent='＋'; same.title='Add another strain — new row with the SAME brand & type (for a different strain/flavor)';
+  same.addEventListener('click',function(){
+    var ni=i+1; data.splice(ni,0,{brand:r.brand,strain:'',type:r.type,count:1}); renderRows(); build();
+    var tr2=rowsEl.querySelector('tr[data-idx="'+ni+'"]'); if(tr2){ var inp=tr2.querySelector('.bcol-strain input'); if(inp) inp.focus(); }
+  });
+  swrap.appendChild(sin); swrap.appendChild(same); tdS.appendChild(swrap);
+  var tdT=mkTd('bcol-type'), tin=mkIn('1g pre-roll',r.type);
+  tin.addEventListener('input',function(){r.type=tin.value;build();}); tin.addEventListener('keydown',function(e){onCellKey(e,i,2);}); tdT.appendChild(tin);
+  var tdC=mkTd('bcol-case'), wrap=document.createElement('div'); wrap.className='casecell';
+  var cnt=mkIn('1', String(r.count||1)); cnt.className='cellinput casecount'; cnt.title='Case size — how many in the case';
+  cnt.addEventListener('input',function(){ r.count=Math.max(1,parseInt(cnt.value.replace(/[^0-9]/g,''),10)||1); cnt.value=r.count; build(); });
+  var dup=document.createElement('button'); dup.className='dupbtn'; dup.textContent='＋ Case'; dup.title='Add one more of this label to the case (grows the case number)';
+  dup.addEventListener('click',function(){ r.count=(parseInt(r.count,10)||1)+1; cnt.value=r.count; build(); });
+  wrap.appendChild(cnt); wrap.appendChild(dup); tdC.appendChild(wrap);
+  var tdX=mkTd('col-x'), x=document.createElement('button'); x.className='xbtn'; x.textContent='×'; x.title='Remove row';
+  x.addEventListener('click',function(){ data.splice(i,1); if(data.length===0) data.push(blankBoxRow()); renderRows(); build(); }); tdX.appendChild(x);
+  tr.appendChild(tdB); tr.appendChild(tdS); tr.appendChild(tdT); tr.appendChild(tdC); tr.appendChild(tdX);
+  return tr;
+}
+function makeBoxLabel(r, idx, total){
+  var el=document.createElement('div'); el.className='boxlabel';
+  var brand=document.createElement('div'); brand.className='bl-brand'; brand.textContent=(r.brand||''); brand.dataset.base=46;
+  var strain=document.createElement('div'); strain.className='bl-strain'; strain.textContent=(r.strain||''); strain.dataset.base=66;
+  var type=document.createElement('div'); type.className='bl-type'; type.textContent=(r.type||'');
+  var cas=document.createElement('div'); cas.className='bl-case'; cas.textContent=idx+' of '+total;
+  el.appendChild(brand); el.appendChild(strain); el.appendChild(type); el.appendChild(cas);
+  requestAnimationFrame(function(){ fitText(strain, 3.6*96); fitText(brand, 3.7*96); });
+  return el;
+}
+/* ---------- cross-label linking: share strain names between Large / Small / Box ---------- */
+function namesOfSize(size){ return (store[size]||[]).map(function(r){return (r.name||'').trim();}).filter(Boolean); }
+function strainsOfBox(){ return (store.box||[]).map(function(r){return (r.strain||'').trim();}).filter(Boolean); }
+function mergeNamesIntoBox(names){
+  if(!store.box) store.box=[];
+  var have={}; store.box.forEach(function(b){ var k=(b.strain||'').trim().toLowerCase(); if(k) have[k]=true; });
+  var added=0;
+  names.forEach(function(nm){ var k=nm.toLowerCase(); if(!have[k]){ store.box.push({brand:'',strain:nm,type:'',count:1}); have[k]=true; added++; } });
+  if(added>0){ var real=store.box.filter(boxHasContent); if(real.length) store.box=real; }
+  return added;
+}
+function mergeNamesIntoSize(size,names){
+  if(!store[size]) store[size]=defaultRows();
+  var have={}; store[size].forEach(function(r){ var k=(r.name||'').trim().toLowerCase(); if(k) have[k]=true; });
+  var added=0;
+  names.forEach(function(nm){ var k=nm.toLowerCase(); if(!have[k]){ var row=blankRow(); row.name=nm; store[size].push(row); have[k]=true; added++; } });
+  if(added>0){ var real=store[size].filter(hasContent); if(real.length) store[size]=real; }
+  return added;
+}
+// mirror the FINISHED strain names typed on `fromSize` into the linked target size(s).
+// Called only on label-size switch and when a checkbox is first ticked — never on every keystroke,
+// so partially-typed names (D, DR, DRE…) are not captured. Only ever writes to the non-active store.
+function syncLinks(fromSize){
+  var added=0, target='';
+  if(fromSize==='box'){
+    if(chkBoxToLarge.checked){ added+=mergeNamesIntoSize('large', strainsOfBox()); target='Large'; }
+    if(chkBoxToSmall.checked){ added+=mergeNamesIntoSize('small', strainsOfBox()); target=target?target+' & Small':'Small'; }
+  } else {
+    if(chkToBox.checked){ added+=mergeNamesIntoBox(namesOfSize(fromSize)); target='Box'; }
+  }
+  return {added:added, target:target};
+}
+// status line under the toolbar
+function updateLinkMsg(res){
+  var el=document.getElementById('linkmsg'); if(!el) return;
+  var anyOn = (sizeEl.value==='box') ? (chkBoxToLarge.checked||chkBoxToSmall.checked) : chkToBox.checked;
+  if(!anyOn){ el.textContent=''; return; }
+  var lead = (res && res.added) ? ('Added '+res.added+' strain'+(res.added>1?'s':'')+' to '+res.target+' labels — ') : '';
+  el.textContent = '↔ '+lead+'linked; updates when you switch label size';
+}
+// identity key: labels with identical brand + strain + type belong to the same case
+function boxKey(r){ return (r.brand||'').trim().toLowerCase()+''+(r.strain||'').trim().toLowerCase()+''+(r.type||'').trim().toLowerCase(); }
+function buildBox(){
+  // expand each row into its copies (the Copy button / Copies count), preserving row order
+  var items=[];
+  data.forEach(function(r){
+    if(!boxHasContent(r)) return;
+    var n=Math.max(1,parseInt(r.count,10)||1);
+    for(var i=0;i<n;i++) items.push(r);
+  });
+  // SMART case numbers: total per case = every label that shares the same brand+strain+type,
+  // whether it came from the Copy button OR from separate identical rows.
+  var totals={}; items.forEach(function(r){ var k=boxKey(r); totals[k]=(totals[k]||0)+1; });
+  document.getElementById('count').textContent = items.length===0 ? 'No labels yet' : (items.length+' label'+(items.length>1?'s':''));
+  var seen={};
+  items.forEach(function(r){
+    var k=boxKey(r); seen[k]=(seen[k]||0)+1;
+    var pg=document.createElement('div'); pg.className='page boxpage';
+    pg.appendChild(makeBoxLabel(r, seen[k], totals[k]));
+    printroot.appendChild(pg);
+  });
+}
+function build(){
+  printroot.innerHTML="";
+  if(sizeEl.value==='box'){ buildBox(); rescale(); return; }
+  const L=LAYOUT[sizeEl.value];
+  const {placements,pages,labelCount}=computeLayout();
+  const cEl=document.getElementById('count');
+  cEl.textContent = labelCount===0 ? "No labels yet" : (labelCount+" label"+(labelCount>1?"s":"")+" · "+pages+" page"+(pages>1?"s":""));
+  const pageEls=[];
+  for(let p=0;p<pages;p++){ const pg=document.createElement('div');pg.className='page';pageEls.push(pg);printroot.appendChild(pg); }
+  if(sizeEl.value==='small') pageEls.forEach(pg=>addCutMarks(pg,L));
+  placements.forEach(pl=>{
+    const lab=makeLabel(pl.rec,L);
+    const cx=L.colCenters[pl.col], cy=rowCenterY(L,pl.row);
+    lab.style.left=(cx-L.cellW/2)+'in';
+    lab.style.top=(cy-L.cellH/2)+'in';
+    pageEls[pl.page].appendChild(lab);
+  });
   rescale();
 }
 
-/* ---------- scale preview to fit right panel ---------- */
+/* ---------- scale preview so a full page fits the panel (width AND height) ---------- */
 function rescale(){
   const scaler=document.getElementById('previewScaler');
   const panel=document.getElementById('right');
-  const avail=panel.clientWidth-4;
-  const pageW=8.5*96;
-  let s=Math.min(1,avail/pageW);
-  scaler.style.transform='scale('+s+')';
-  // set height so panel scrolls correctly
-  const stack=document.getElementById('printroot');
-  scaler.style.height=(stack.offsetHeight*s)+'px';
-  scaler.style.width=pageW+'px';
+  const title=document.getElementById('previewTitle');
+  const box=sizeEl.value==='box';
+  const pageW=(box?4:8.5)*96, pageH=(box?2:11)*96;
+  const cs=getComputedStyle(panel);
+  const padX=parseFloat(cs.paddingLeft)+parseFloat(cs.paddingRight);
+  const padY=parseFloat(cs.paddingTop)+parseFloat(cs.paddingBottom);
+  let titleSpace=0;
+  if(title){ const t=getComputedStyle(title); titleSpace=title.offsetHeight+parseFloat(t.marginTop)+parseFloat(t.marginBottom); }
+  const availW=panel.clientWidth-padX-2;
+  const availH=panel.clientHeight-padY-titleSpace-6;
+  // Large/Small: fit one whole page (width AND height). Box: fit label width (they stack and scroll).
+  // `zoom` scales layout (unlike transform) so it never overflows horizontally. (Chrome/Edge only.)
+  const s = box ? Math.max(0.1, Math.min(1.4, availW/pageW))
+               : Math.max(0.05, Math.min(1, availW/pageW, availH/pageH));
+  scaler.style.transform='';
+  scaler.style.width='';
+  scaler.style.height='';
+  scaler.style.zoom=s;
 }
 window.addEventListener('resize',rescale);
 
 /* ---------- controls ---------- */
-sizeEl.addEventListener('change',build);
-document.getElementById('addRow').addEventListener('click',()=>{data.push(blankRow());renderRows();build();});
-document.getElementById('clearBtn').addEventListener('click',()=>{data=defaultRows();renderRows();build();});
-document.getElementById('printBtn').addEventListener('click',()=>{ if(filledRows().length===0){alert('Add at least one label before printing.');return;} window.print(); });
+function applySizeClass(){ document.body.classList.toggle('size-large', sizeEl.value==='large'); document.body.classList.toggle('size-box', sizeEl.value==='box'); }
+let prevSize=sizeEl.value;
+sizeEl.addEventListener('change',()=>{
+  syncLinks(prevSize);        // mirror what was finished on the page we're leaving
+  prevSize=sizeEl.value;
+  if(sizeEl.value==='box'){ syncBoxFromLarge(); data=store.box; } else { data=store[sizeEl.value]; }
+  setPageSize(); applySizeClass(); renderRows(); build(); updateLinkMsg();
+});
+// cross-label checkboxes: ticking one mirrors the strains already typed on THIS page now,
+// then keeps them linked so a later label-size switch re-syncs (no per-keystroke copying)
+[chkToBox,chkBoxToLarge,chkBoxToSmall].forEach(function(c){ c.addEventListener('change',function(){
+  var res = c.checked ? syncLinks(sizeEl.value) : null;
+  updateLinkMsg(res); build();
+}); });
+document.getElementById('addRow').addEventListener('click',()=>{data.push(newRow());renderRows();build();});
+document.getElementById('clearBtn').addEventListener('click',()=>{
+  if(sizeEl.value==='box'){ store.box=[]; syncBoxFromLarge(); data=store.box; }
+  else { store[sizeEl.value]=defaultRows(); data=store[sizeEl.value]; }
+  renderRows();build();
+});
+document.getElementById('printBtn').addEventListener('click',()=>{ if(rowsEl.children.length===0){alert('Add at least one label before printing.');return;} window.print(); });
 
 /* ---------- update status (display only; the launcher does the real update) ---------- */
 function verNum(v){const p=(v+'.0.0').split('.');return (+p[0])*1e6+(+p[1])*1e3+(+p[2]);}
@@ -420,8 +753,9 @@ function checkUpdate(){
 }
 
 /* ---------- init ---------- */
-data=defaultRows();
-renderRows();build();checkUpdate();
+store={large:defaultRows(), small:defaultRows(), box:null};
+data=store[sizeEl.value];
+setPageSize();applySizeClass();renderRows();build();checkUpdate();
 </script>
 </body>
 </html>
